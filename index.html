@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admission Exam Portal - Bangladesh Affairs</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --bg-light: #f8fafc;
+            --card-bg: #ffffff;
+            --text-dark: #0f172a;
+            --border-color: #e2e8f0;
+            --danger: #ef4444;
+            --success: #10b981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 1rem 2rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            width: 100%;
+            flex: 1;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+        }
+
+        /* Login Screen */
+        .login-box {
+            max-width: 450px;
+            margin: 2rem auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        button.btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+        }
+
+        button.btn:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Exam Layout */
+        .exam-layout {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .exam-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .exam-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .timer-box {
+            background: #fee2e2;
+            color: var(--danger);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .question-card {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .question-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .options-list {
+            list-style: none;
+        }
+
+        .option-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .option-item label {
+            display: flex;
+            align-items: center;
+            padding: 0.6rem 0.8rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: normal;
+        }
+
+        .option-item label:hover {
+            background-color: var(--bg-light);
+        }
+
+        .option-item input {
+            margin-right: 0.75rem;
+        }
+
+        /* Palette */
+        .palette-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.5rem;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 1rem;
+        }
+
+        .palette-btn {
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            background: #f1f5f9;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+
+        .palette-btn.answered {
+            background: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+
+        /* Results */
+        .result-stat {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .stat-box {
+            padding: 1rem;
+            background: var(--bg-light);
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h2>ভর্তি পরীক্ষা পোর্টাল - বাংলাদেশ বিষয়াবলি</h2>
+    </header>
+
+    <div class="container">
+        <!-- Login Screen -->
+        <div id="login-screen" class="card login-box">
+            <h3 style="margin-bottom: 1.5rem; text-align: center;">পরীক্ষার্থীর তথ্য</h3>
+            <div class="form-group">
+                <label for="candidate-name">আপনার নাম:</label>
+                <input type="text" id="candidate-name" placeholder="আপনার পূর্ণ নাম লিখুন" required>
+            </div>
+            <div class="form-group">
+                <label for="candidate-roll">রোল / আইডি নম্বর:</label>
+                <input type="text" id="candidate-roll" placeholder="আপনার রোল নম্বর লিখুন" required>
+            </div>
+            <button class="btn" onclick="startExam()">পরীক্ষা শুরু করুন</button>
+        </div>
+
+        <!-- Exam Screen -->
+        <div id="exam-screen" class="hidden">
+            <div class="card">
+                <div class="exam-header">
+                    <div>
+                        <h4 id="user-display-info">নাম: - | রোল: -</h4>
+                        <small>মোট প্রশ্ন: ৫০ | সময়: ৩০ মিনিট | নেগেটিভ মার্কিং: ০.২৫</small>
+                    </div>
+                    <div class="timer-box" id="timer-display">
+                        সময় বাকি: ৩০:০০
+                    </div>
+                </div>
+
+                <div class="exam-layout">
+                    <div id="questions-container">
+                        <!-- Questions will render here dynamically -->
+                    </div>
+
+                    <div>
+                        <div class="card" style="padding: 1rem;">
+                            <h4>প্রশ্ন নেভিগেশন</h4>
+                            <div class="palette-grid" id="palette-container">
+                                <!-- Palette buttons will render here -->
+                            </div>
+                        </div>
+                        <button class="btn" style="margin-top: 1rem; background: var(--success);" onclick="confirmSubmit()">পরীক্ষা সাবমিট করুন</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden">
+            <div class="card login-box">
+                <h3 style="text-align: center; color: var(--primary);">পরীক্ষার ফলাফল</h3>
+                <div id="result-user-info" style="margin-top: 1rem; text-align: center;"></div>
+                
+                <div class="result-stat">
+                    <div class="stat-box">
+                        <div>সঠিক উত্তর</div>
+                        <div class="stat-number" id="stat-correct" style="color: var(--success);">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div>ভুল উত্তর</div>
+                        <div class="stat-number" id="stat-incorrect" style="color: var(--danger);">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div>উত্তর দেওয়া হয়নি</div>
+                        <div class="stat-number" id="stat-unanswered">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div>চূড়ান্ত নম্বর</div>
+                        <div class="stat-number" id="stat-score">0.00</div>
+                    </div>
+                </div>
+
+                <button class="btn" onclick="location.reload()">পুনরায় নাম লিখুন</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+  
