@@ -1,29 +1,28 @@
 let questions = [];
 let userAnswers = {};
 let timerInterval = null;
-let totalTime = 30 * 60; // 30 minutes in seconds
+let totalTime = 30 * 60; // 30 minutes
 let candidateData = { name: "", roll: "" };
 
-// Fetch Questions from JSON file
 async function loadQuestions() {
     try {
         const response = await fetch('questions.json');
+        if (!response.ok) throw new Error("Network response was not ok");
         questions = await response.json();
         renderQuestions();
         renderPalette();
     } catch (error) {
-        console.error("Questions load kora jaayni:", error);
-        alert("প্রশ্ন লোড করতে সমস্যা হয়েছে! দয়া করে নিশ্চিত করুন questions.json ফাইলটি ঠিক আছে।");
+        console.error("Error loading questions:", error);
+        alert("প্রশ্ন লোড করতে সমস্যা হয়েছে! দয়া করে নিশ্চিত করুন একই ফোল্ডারে questions.json ফাইলটি সঠিকভাবে আছে।");
     }
 }
 
-// Start Exam Function
 function startExam() {
     const nameInput = document.getElementById('candidate-name').value.trim();
     const rollInput = document.getElementById('candidate-roll').value.trim();
 
     if (!nameInput || !rollInput) {
-        alert("দয়া করে নাম এবং রোল নম্বর ইনপুট দিন!");
+        alert("দয়া করে আপনার নাম এবং রোল নম্বর লিখুন!");
         return;
     }
 
@@ -39,7 +38,6 @@ function startExam() {
     startTimer();
 }
 
-// Render Questions to HTML
 function renderQuestions() {
     const container = document.getElementById('questions-container');
     container.innerHTML = "";
@@ -70,7 +68,6 @@ function renderQuestions() {
     });
 }
 
-// Render Navigation Palette
 function renderPalette() {
     const palette = document.getElementById('palette-container');
     palette.innerHTML = "";
@@ -87,7 +84,6 @@ function renderPalette() {
     });
 }
 
-// Record User Choice
 function selectOption(qIndex, optIndex) {
     userAnswers[qIndex] = optIndex;
     const pBtn = document.getElementById(`palette-btn-${qIndex}`);
@@ -96,7 +92,6 @@ function selectOption(qIndex, optIndex) {
     }
 }
 
-// Timer Logic
 function startTimer() {
     timerInterval = setInterval(() => {
         const minutes = Math.floor(totalTime / 60);
@@ -107,23 +102,21 @@ function startTimer() {
 
         if (totalTime <= 0) {
             clearInterval(timerInterval);
-            alert("সময় শেষ! আপনার উত্তরপত্র স্বয়ংক্রিয়ভাবে সাবমিট হচ্ছে।");
+            alert("সময় শেষ! আপনার পরীক্ষা স্বয়ংক্রিয়ভাবে সাবমিট হয়ে গেছে।");
             calculateAndShowResult();
         }
         totalTime--;
     }, 1000);
 }
 
-// Confirmation before Submission
 function confirmSubmit() {
     const answeredCount = Object.keys(userAnswers).length;
-    if (confirm(`আপনি কি নিশ্চিত? মোট ৫০টির মধ্যে ${answeredCount}টি প্রশ্নের উত্তর দিয়েছেন।`)) {
+    if (confirm(`আপনি কি পরীক্ষা সাবমিট করতে চান? মোট ৫০টির মধ্যে ${answeredCount}টি প্রশ্নের উত্তর দিয়েছেন।`)) {
         clearInterval(timerInterval);
         calculateAndShowResult();
     }
 }
 
-// Calculate Score & Show Result with Answer Review
 function calculateAndShowResult() {
     let correct = 0;
     let incorrect = 0;
@@ -141,7 +134,7 @@ function calculateAndShowResult() {
         }
     });
 
-    // Negative marking: -0.25 per incorrect answer
+    // Negative marking: 0.25 deduction per wrong answer
     let finalScore = (correct * 1.0) - (incorrect * 0.25);
     if (finalScore < 0) finalScore = 0;
 
@@ -156,15 +149,12 @@ function calculateAndShowResult() {
     document.getElementById('stat-unanswered').innerText = unanswered;
     document.getElementById('stat-score').innerText = finalScore.toFixed(2);
 
-    // Show Detailed Answer Sheet Review
     renderReview();
 }
 
-// Render Correct Answer Review Section
 function renderReview() {
-    const resultContainer = document.getElementById('result-screen').querySelector('.card');
-    
-    let reviewHTML = '<hr style="margin: 2rem 0;"><h3 style="text-align: center; color: #2563eb;">প্রশ্ন ও সঠিক উত্তরমালা</h3>';
+    const reviewContainer = document.getElementById('review-container');
+    let reviewHTML = '<hr style="margin: 2rem 0;"><h3 style="text-align: center; color: #2563eb; margin-bottom: 1rem;">প্রশ্ন ও সঠিক উত্তরমালা পর্যালোচনা</h3>';
 
     questions.forEach((q, index) => {
         const userAnsIndex = userAnswers[index];
@@ -188,6 +178,5 @@ function renderReview() {
         `;
     });
 
-    resultContainer.innerHTML += reviewHTML;
-                      }
-        
+    reviewContainer.innerHTML = reviewHTML;
+}
