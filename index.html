@@ -55,7 +55,6 @@
             border: 1px solid var(--border-color);
         }
 
-        /* Login Screen */
         .login-box {
             max-width: 450px;
             margin: 2rem auto;
@@ -96,7 +95,6 @@
             background: var(--primary-dark);
         }
 
-        /* Exam Layout */
         .exam-layout {
             display: grid;
             grid-template-columns: 1fr 300px;
@@ -165,7 +163,6 @@
             margin-right: 0.75rem;
         }
 
-        /* Palette */
         .palette-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
@@ -191,7 +188,6 @@
             border-color: var(--success);
         }
 
-        /* Results */
         .result-stat {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -271,7 +267,7 @@
 
         <!-- Result Screen -->
         <div id="result-screen" class="hidden">
-            <div class="card login-box">
+            <div class="card">
                 <h3 style="text-align: center; color: var(--primary);">পরীক্ষার ফলাফল</h3>
                 <div id="result-user-info" style="margin-top: 1rem; text-align: center;"></div>
                 
@@ -294,12 +290,13 @@
                     </div>
                 </div>
 
-                <button class="btn" onclick="location.reload()">পুনরায় নাম লিখুন</button>
+                <div id="review-container"></div>
+                <button class="btn" style="margin-top: 2rem;" onclick="location.reload()">পুনরায় পরীক্ষা দিন</button>
             </div>
         </div>
     </div>
 
     <script src="script.js"></script>
 </body>
-</html>
-  
+        </html>
+    
